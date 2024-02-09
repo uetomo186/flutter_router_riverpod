@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_router_riverpod/hooks/use_side_effect.dart';
+import 'package:flutter_router_riverpod/widget/loading_spinner.dart';
 
 class ActionButton extends HookWidget {
   const ActionButton({
@@ -10,11 +12,41 @@ class ActionButton extends HookWidget {
     required this.icon,
   });
   final AsyncCallback onPressed;
-  final String label;
+  final Widget label;
   final Widget icon;
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    final (clear: _, :mutate, :snapshot) = useSideEffect<void>();
+    Future<void> pressButton() async {
+      final future = onPressed();
+      mutate(future);
+      try {
+        await future;
+      } catch (exception) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('エラーが発生しました。$exception'),
+          ),
+        );
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: ElevatedButton.icon(
+        onPressed: switch (snapshot) {
+          AsyncSnapshot(connectionState: ConnectionState.waiting) => null,
+          _ => pressButton,
+        },
+        icon: switch (snapshot) {
+          AsyncSnapshot(connectionState: ConnectionState.waiting) =>
+            const LoadingSpinner(),
+          _ => icon,
+        },
+        label: label,
+      ),
+    );
   }
 }
