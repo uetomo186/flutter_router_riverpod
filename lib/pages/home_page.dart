@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_router_riverpod/widget/logout_button.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomePage extends ConsumerWidget {
@@ -13,6 +14,7 @@ class HomePage extends ConsumerWidget {
       body: const Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text('ホーム画面です！'),
+          LogoutButton(),
         ]),
       ),
     );
