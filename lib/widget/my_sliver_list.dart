@@ -2,8 +2,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MySliverlist extends StatelessWidget {
-  const MySliverlist({super.key, required this.elements, this.isNuke = false});
+class MySliverList extends StatelessWidget {
+  const MySliverList({super.key, required this.elements, this.isNuke = false});
   final AsyncValue<List<(IconData, String)>> elements;
   final bool isNuke;
 
