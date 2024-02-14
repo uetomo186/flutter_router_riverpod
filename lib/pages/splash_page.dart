@@ -11,7 +11,7 @@ class SplashPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Splash Page'),
+            Text('スプラッシュページ'),
             SizedBox(height: 16),
             LoadingSpinner(),
           ],
