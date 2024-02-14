@@ -8,10 +8,10 @@ part 'router.g.dart';
 
 @riverpod
 GoRouter router(RouterRef ref) {
-  final routerKey = GlobalKey<NavigatorState>(debugLabel: 'router');
+  final routerKey = GlobalKey<NavigatorState>(debugLabel: 'routerKey');
   final isAuth = ValueNotifier<AsyncValue<bool>>(const AsyncLoading());
   ref
-    ..onDispose(isAuth.dispose)
+    ..onDispose(isAuth.dispose) // don't forget to clean after yourselves (:
     ..listen(
       authControllerProvider
           .select((value) => value.whenData((value) => value.isAuth)),
@@ -29,7 +29,7 @@ GoRouter router(RouterRef ref) {
     redirect: (context, state) {
       if (isAuth.value.unwrapPrevious().hasError)
         return const LoginRoute().location;
-      if (isAuth.value.isLoading || isAuth.value.hasValue)
+      if (isAuth.value.isLoading || !isAuth.value.hasValue)
         return const SplashRoute().location;
 
       final auth = isAuth.value.requireValue;
@@ -44,7 +44,7 @@ GoRouter router(RouterRef ref) {
       return auth ? null : const SplashRoute().location;
     },
   );
-  ref.onDispose(router.dispose);
+  ref.onDispose(router.dispose); // always clean up after yourselves (:
 
   return router;
 }
